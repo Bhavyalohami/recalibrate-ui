@@ -1,4 +1,4 @@
-ï»¿import {
+import {
   ArrowRight,
   CheckCheck,
   CircleCheck,
@@ -13,6 +13,10 @@
   Star,
   Users,
 } from 'lucide-react'
+
+const assetUrl = (path) => `${import.meta.env.BASE_URL}${path}`
+const logoUrl = assetUrl('assets/recalibrate-logo-tight.png')
+const productUrl = assetUrl('assets/recalibrate-product-cutout.png')
 
 const navItems = [
   { label: 'Features', href: 'features' },
@@ -144,7 +148,7 @@ function ProductVisual({ accent, title }) {
       <div className="absolute bottom-6 left-1/2 h-20 w-44 -translate-x-1/2 rounded-[100%] bg-white/80 shadow-[0_30px_70px_rgba(15,23,42,0.16)]" />
       <div className="relative flex h-full items-end justify-center">
         <img
-          src="/assets/recalibrate-product-cutout.png"
+          src={productUrl}
           alt={`${title} bottle`}
           className="h-full max-h-[17rem] w-auto object-contain drop-shadow-2xl"
         />
@@ -161,7 +165,7 @@ function App() {
           <a className="flex items-center gap-3" href="#top" aria-label="Recalibrate 17 home">
             <span className="flex h-20 w-72 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-soft ring-1 ring-slate-200">
               <img
-                src="/assets/recalibrate-logo-tight.png"
+                src={logoUrl}
                 alt="Recalibrate 17"
                 className="h-full w-full object-contain object-center"
               />
@@ -225,11 +229,11 @@ function App() {
                   <div className="absolute inset-x-12 bottom-14 h-20 rounded-full bg-blue-500/20 blur-3xl" />
                   <div className="relative rounded-[2rem] bg-gradient-to-br from-white via-slate-50 to-blue-50 p-6 shadow-2xl">
                     <div className="flex items-center justify-between gap-4">
-                      <p className="text-xs font-black uppercase tracking-[0.24em] text-brand-600">Performance â€¢ Focus â€¢ Balance</p>
+                      <p className="text-xs font-black uppercase tracking-[0.24em] text-brand-600">Performance • Focus • Balance</p>
                       <span className="shrink-0 rounded-full bg-slate-950 px-3 py-1 text-xs font-bold text-white">60 tablets</span>
                     </div>
                     <img
-                      src="/assets/recalibrate-product-cutout.png"
+                      src={productUrl}
                       alt="Recalibrate 17 chewable tablets bottle"
                       className="mx-auto mt-3 h-[560px] max-h-[62vh] w-auto object-contain drop-shadow-2xl"
                     />
@@ -425,9 +429,9 @@ function App() {
         <div className="section-shell flex flex-col gap-6 text-sm sm:flex-row sm:items-center sm:justify-between">
                     <p className="flex items-center gap-3">
             <span className="flex h-16 w-64 items-center justify-center overflow-hidden rounded-xl bg-white p-2">
-              <img src="/assets/recalibrate-logo-tight.png" alt="Recalibrate 17" className="h-full w-full object-contain object-center" />
+              <img src={logoUrl} alt="Recalibrate 17" className="h-full w-full object-contain object-center" />
             </span>
-            <span>Â© 2026</span>
+            <span>© 2026</span>
           </p>
           <div className="flex flex-wrap gap-5">
             <a href="#features" className="hover:text-white">Features</a>
