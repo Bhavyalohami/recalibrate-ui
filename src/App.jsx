@@ -156,7 +156,7 @@ function ProductVisual({ accent, title }) {
 function App() {
   return (
     <div className="min-h-screen overflow-hidden bg-white text-ink">
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-xl py-2">
         <nav className="section-shell flex h-20 items-center justify-between gap-4" aria-label="Main navigation">
           <a className="flex items-center gap-3" href="#top" aria-label="Recalibrate 17 home">
             <span className="flex h-20 w-72 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-soft ring-1 ring-slate-200">
