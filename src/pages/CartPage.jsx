@@ -34,6 +34,11 @@ function CartPage({ cartItems, cartTotal, updateCartQuantity, removeFromCart, be
                     <div>
                       <h2 className="text-xl font-black text-slate-950">{item.title}</h2>
                       <p className="mt-1 text-sm font-bold text-blue-700">{formatPrice(item.price)}</p>
+                      {item.planName && (
+                        <p className="mt-2 inline-flex rounded-md bg-blue-50 px-2.5 py-1 text-xs font-black uppercase text-blue-700">
+                          {item.planName} plan
+                        </p>
+                      )}
                       <button type="button" onClick={() => removeFromCart(item.id)} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-red-600">
                         <Trash2 size={16} />
                         Remove

@@ -68,20 +68,23 @@ const plans = [
     name: 'Starter',
     price: '$29',
     note: 'For testing consistency habits',
-    items: ['1 product', 'Starter support path', 'Email updates'],
+    items: ['Recalibrate Core', 'Starter support path', 'Email updates'],
+    productIds: ['core'],
   },
   {
     name: 'Core',
-    price: '$49',
+    price: '$68',
     note: 'Best value for long-term use',
-    items: ['2 products', 'Priority support', 'Guided cadence'],
+    items: ['Recalibrate Core + Night', 'Priority support', 'Guided cadence'],
+    productIds: ['core', 'night'],
     featured: true,
   },
   {
     name: 'Performance',
-    price: '$79',
+    price: '$117',
     note: 'Maximum structure and upgrades',
-    items: ['All 3 products', 'Private guidance calls', 'Adaptive plans'],
+    items: ['All 3 Recalibrate products', 'Private guidance calls', 'Adaptive plans'],
+    productIds: ['core', 'night', 'motion'],
   },
 ]
 
@@ -100,7 +103,7 @@ const faqItems = [
   },
 ]
 
-function HomePage({ addToCart, contactStatus, handleContactSubmit, setPage }) {
+function HomePage({ addToCart, addPlanToCart, contactStatus, handleContactSubmit, setPage }) {
   return (
     <main>
       <section id="top" className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_54%,#edf6ff_100%)] pt-28">
@@ -299,8 +302,17 @@ function HomePage({ addToCart, contactStatus, handleContactSubmit, setPage }) {
                     </li>
                   ))}
                 </ul>
-                <button type="button" onClick={() => setPage('cart')} className={plan.featured ? 'btn-secondary mt-8 w-full' : 'btn-primary mt-8 w-full'}>
-                  Choose plan
+                <button
+                  type="button"
+                  onClick={() =>
+                    addPlanToCart({
+                      ...plan,
+                      products: products.filter((product) => plan.productIds.includes(product.id)),
+                    })
+                  }
+                  className={plan.featured ? 'btn-secondary mt-8 w-full' : 'btn-primary mt-8 w-full'}
+                >
+                  Add {plan.name} plan
                 </button>
               </article>
             ))}

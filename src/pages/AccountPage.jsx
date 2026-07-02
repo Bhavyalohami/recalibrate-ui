@@ -112,7 +112,11 @@ function AccountPage({ userProfile, billingAddress, orders, cartCount, accountSt
                     </div>
                     <p className="mt-1 text-sm font-bold text-slate-500">{order.date}</p>
                     <p className="mt-3 text-sm text-slate-600">
-                      {order.items.map((item) => `${item.title} x ${item.quantity}`).join(', ')}
+                      {order.items
+                        .map((item) =>
+                          `${item.title} x ${item.quantity}${item.planName ? ` (${item.planName} plan)` : ''}`,
+                        )
+                        .join(', ')}
                     </p>
                   </div>
                   <p className="text-xl font-black text-slate-950">{formatPrice(order.total)}</p>

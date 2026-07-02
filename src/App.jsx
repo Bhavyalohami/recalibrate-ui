@@ -68,6 +68,23 @@ function App() {
     setPage('cart')
   }
 
+  const addPlanToCart = (plan) => {
+    setCartItems((items) => {
+      const planProductIds = plan.products.map((product) => product.id)
+      const individualItems = items.filter(
+        (item) => !item.planName && !planProductIds.includes(item.id),
+      )
+      const planItems = plan.products.map((product) => ({
+        ...product,
+        quantity: 1,
+        planName: plan.name,
+      }))
+
+      return [...individualItems, ...planItems]
+    })
+    setPage('cart')
+  }
+
   const updateCartQuantity = (productId, delta) => {
     setCartItems((items) =>
       items
@@ -146,6 +163,7 @@ function App() {
         title: item.title,
         quantity: item.quantity,
         price: item.price,
+        planName: item.planName,
       })),
     }
 
@@ -186,6 +204,7 @@ function App() {
       {currentPage === 'home' && (
         <HomePage
           addToCart={addToCart}
+          addPlanToCart={addPlanToCart}
           contactStatus={contactStatus}
           handleContactSubmit={handleContactSubmit}
           setPage={setPage}
