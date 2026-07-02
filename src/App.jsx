@@ -1,4 +1,5 @@
-﻿import {
+import { useMemo, useState } from 'react'
+import {
   ArrowRight,
   CheckCheck,
   CircleCheck,
@@ -8,10 +9,17 @@
   Cpu,
   Flame,
   Headset,
+  Mail,
+  Minus,
+  Plus,
+  Send,
   ShieldCheck,
+  ShoppingCart,
   Sparkles,
   Star,
+  Trash2,
   Users,
+  X,
 } from 'lucide-react'
 
 const assetUrl = (path) => `${import.meta.env.BASE_URL}${path}`
@@ -23,23 +31,30 @@ const navItems = [
   { label: 'Products', href: 'products' },
   { label: 'Pricing', href: 'pricing' },
   { label: 'FAQ', href: 'faq' },
+  { label: 'Contact', href: 'contact' },
 ]
 
 const products = [
   {
+    id: 'core',
     title: 'Recalibrate Core',
+    price: 29,
     description: 'A daily baseline blend for focus, rhythm, and consistency.',
     details: ['Clean profile', 'Daily routine blocks', 'Balanced release'],
     accent: 'from-blue-500 to-cyan-400',
   },
   {
+    id: 'night',
     title: 'Recalibrate Night',
+    price: 39,
     description: 'A calmer reset path designed for wind-down and smoother mornings.',
     details: ['Evening wind-down', 'Consistency reminders', 'Calm-forward formulas'],
     accent: 'from-indigo-500 to-violet-400',
   },
   {
+    id: 'motion',
     title: 'Recalibrate Motion',
+    price: 49,
     description: 'A stronger structure for active days and recovery checkpoints.',
     details: ['Performance pacing', 'Recovery checkpoints', 'Hydration pairing'],
     accent: 'from-sky-500 to-emerald-400',
@@ -159,7 +174,59 @@ function ProductVisual({ accent, title }) {
   )
 }
 
+const formatPrice = (value) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(value)
+
 function App() {
+  const [cartItems, setCartItems] = useState([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [contactStatus, setContactStatus] = useState('')
+
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0)
+  const cartTotal = useMemo(
+    () => cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+    [cartItems],
+  )
+
+  const addToCart = (product) => {
+    setCartItems((items) => {
+      const existingItem = items.find((item) => item.id === product.id)
+
+      if (existingItem) {
+        return items.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item,
+        )
+      }
+
+      return [...items, { ...product, quantity: 1 }]
+    })
+    setIsCartOpen(true)
+  }
+
+  const updateCartQuantity = (productId, delta) => {
+    setCartItems((items) =>
+      items
+        .map((item) =>
+          item.id === productId ? { ...item, quantity: item.quantity + delta } : item,
+        )
+        .filter((item) => item.quantity > 0),
+    )
+  }
+
+  const removeFromCart = (productId) => {
+    setCartItems((items) => items.filter((item) => item.id !== productId))
+  }
+
+  const handleContactSubmit = (event) => {
+    event.preventDefault()
+    setContactStatus('Thanks — your message is ready for the sales team.')
+    event.currentTarget.reset()
+  }
+
   return (
     <div className="min-h-screen overflow-hidden bg-white text-ink">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/60 bg-white/75 backdrop-blur-xl py-2">
@@ -184,13 +251,137 @@ function App() {
             <a className="hidden text-sm font-bold text-slate-600 hover:text-brand-600 sm:inline-flex" href="#faq">
               Login
             </a>
+            <button
+              type="button"
+              onClick={() => setIsCartOpen(true)}
+              className="relative inline-flex h-12 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-black text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand-700"
+              aria-label={`Open cart with ${cartCount} item${cartCount === 1 ? '' : 's'}`}
+            >
+              <ShoppingCart size={18} />
+              <span className="hidden sm:inline">Cart</span>
+              {cartCount > 0 && (
+                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand-600 px-1.5 text-[0.68rem] font-black text-white">
+                  {cartCount}
+                </span>
+              )}
+            </button>
             <a className="btn-primary" href="#products">
-              Get Started
+              Shop now
               <ArrowRight size={18} />
             </a>
           </div>
         </nav>
       </header>
+
+      {isCartOpen && (
+        <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Shopping cart">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-950/45 backdrop-blur-sm"
+            onClick={() => setIsCartOpen(false)}
+            aria-label="Close cart"
+          />
+          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 p-6">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-brand-600">Your cart</p>
+                <h2 className="mt-1 text-2xl font-black text-slate-950">
+                  {cartCount} item{cartCount === 1 ? '' : 's'}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCartOpen(false)}
+                className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 text-slate-600 transition hover:border-brand-200 hover:text-brand-700"
+                aria-label="Close cart"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              {cartItems.length === 0 ? (
+                <div className="grid h-full place-items-center rounded-[2rem] border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+                  <div>
+                    <ShoppingCart className="mx-auto text-brand-600" size={34} />
+                    <h3 className="mt-5 text-xl font-black text-slate-950">Your cart is empty.</h3>
+                    <p className="mt-2 text-slate-600">Add a Recalibrate track to start checkout.</p>
+                    <a className="btn-primary mt-6" href="#products" onClick={() => setIsCartOpen(false)}>
+                      Browse products
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {cartItems.map((item) => (
+                    <article key={item.id} className="flex gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+                      <div className="grid h-24 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-blue-50">
+                        <img src={productUrl} alt={`${item.title} bottle`} className="h-24 w-auto object-contain" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <h3 className="font-black text-slate-950">{item.title}</h3>
+                            <p className="mt-1 text-sm font-bold text-brand-600">{formatPrice(item.price)}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-slate-400 transition hover:text-red-500"
+                            aria-label={`Remove ${item.title}`}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                        <div className="mt-4 flex items-center justify-between">
+                          <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 p-1">
+                            <button
+                              type="button"
+                              onClick={() => updateCartQuantity(item.id, -1)}
+                              className="grid h-8 w-8 place-items-center rounded-full text-slate-600 hover:bg-white hover:text-brand-700"
+                              aria-label={`Decrease ${item.title} quantity`}
+                            >
+                              <Minus size={15} />
+                            </button>
+                            <span className="w-9 text-center text-sm font-black text-slate-950">{item.quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => updateCartQuantity(item.id, 1)}
+                              className="grid h-8 w-8 place-items-center rounded-full text-slate-600 hover:bg-white hover:text-brand-700"
+                              aria-label={`Increase ${item.title} quantity`}
+                            >
+                              <Plus size={15} />
+                            </button>
+                          </div>
+                          <p className="font-black text-slate-950">{formatPrice(item.price * item.quantity)}</p>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-slate-200 p-6">
+              <div className="mb-4 flex items-center justify-between text-lg font-black text-slate-950">
+                <span>Total</span>
+                <span>{formatPrice(cartTotal)}</span>
+              </div>
+              <button
+                type="button"
+                className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={cartItems.length === 0}
+              >
+                Checkout
+                <ArrowRight size={18} />
+              </button>
+              <p className="mt-3 text-center text-xs font-semibold text-slate-500">
+                Demo checkout button — connect Stripe or Shopify next.
+              </p>
+            </div>
+          </aside>
+        </div>
+      )}
 
       <main>
         <section id="top" className="relative bg-hero-mesh pt-32 sm:pt-36">
@@ -291,6 +482,7 @@ function App() {
                     <ProductVisual accent={item.accent} title={item.title} />
                     <div className="p-4">
                       <h3 className="text-2xl font-black tracking-tight text-slate-950">{item.title}</h3>
+                      <p className="mt-3 text-3xl font-black text-brand-600">{formatPrice(item.price)}</p>
                       <p className="mt-3 leading-7 text-slate-600">{item.description}</p>
                       <ul className="mt-6 space-y-3">
                         {item.details.map((detail) => (
@@ -300,6 +492,14 @@ function App() {
                           </li>
                         ))}
                       </ul>
+                      <button
+                        type="button"
+                        onClick={() => addToCart(item)}
+                        className="btn-primary mt-7 w-full"
+                      >
+                        Add to cart
+                        <ShoppingCart size={18} />
+                      </button>
                     </div>
                   </article>
                 </Reveal>
@@ -406,22 +606,86 @@ function App() {
 
         <section id="contact" className="bg-hero-mesh py-24 sm:py-32">
           <div className="section-shell">
-            <div className="glass-card grid gap-8 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div className="glass-card grid gap-10 p-8 sm:p-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <div>
-                <p className="eyebrow">Launch ready</p>
-                <h2 className="mt-5 max-w-3xl text-4xl font-black tracking-[-0.04em] text-slate-950 sm:text-5xl">Ready to move from concept to polished storefront?</h2>
-                <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">Swap in final product renders, brand copy, and checkout links - the structure is now ready for a real launch pass.</p>
+                <p className="eyebrow">Contact</p>
+                <h2 className="mt-5 max-w-3xl text-4xl font-black tracking-[-0.04em] text-slate-950 sm:text-5xl">
+                  Questions before you checkout?
+                </h2>
+                <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+                  Send a message for wholesale, subscription, shipping, or product guidance. We will help you choose the right Recalibrate track.
+                </p>
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-sm">
+                    <Mail className="text-brand-600" size={22} />
+                    <p className="mt-3 text-sm font-black uppercase tracking-[0.18em] text-slate-500">Email</p>
+                    <a className="mt-1 block font-black text-slate-950 hover:text-brand-600" href="mailto:hello@recalibrate17.com">
+                      hello@recalibrate17.com
+                    </a>
+                  </div>
+                  <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-sm">
+                    <Headset className="text-brand-600" size={22} />
+                    <p className="mt-3 text-sm font-black uppercase tracking-[0.18em] text-slate-500">Support</p>
+                    <p className="mt-1 font-black text-slate-950">Mon-Fri, 9am-5pm</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <a className="btn-primary" href="#products">
-                  Get started
-                  <CircleCheck size={18} />
-                </a>
-                <a className="btn-secondary" href="mailto:hello@recalibrate17.com">
-                  Contact sales
-                  <Headset size={18} />
-                </a>
-              </div>
+              <form className="rounded-[2rem] border border-white/70 bg-white/90 p-6 shadow-soft" onSubmit={handleContactSubmit}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="text-sm font-black text-slate-700">Name</span>
+                    <input
+                      required
+                      name="name"
+                      type="text"
+                      className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-950 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+                      placeholder="Your name"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-sm font-black text-slate-700">Email</span>
+                    <input
+                      required
+                      name="email"
+                      type="email"
+                      className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-950 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+                      placeholder="you@example.com"
+                    />
+                  </label>
+                </div>
+                <label className="mt-4 block">
+                  <span className="text-sm font-black text-slate-700">Interested in</span>
+                  <select
+                    name="interest"
+                    className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-950 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+                    defaultValue="Product guidance"
+                  >
+                    <option>Product guidance</option>
+                    <option>Bulk order</option>
+                    <option>Subscription</option>
+                    <option>Shipping question</option>
+                  </select>
+                </label>
+                <label className="mt-4 block">
+                  <span className="text-sm font-black text-slate-700">Message</span>
+                  <textarea
+                    required
+                    name="message"
+                    rows="5"
+                    className="mt-2 w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-950 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
+                    placeholder="Tell us what you need help with..."
+                  />
+                </label>
+                <button type="submit" className="btn-primary mt-5 w-full">
+                  Send message
+                  <Send size={18} />
+                </button>
+                {contactStatus && (
+                  <p className="mt-4 rounded-2xl bg-emerald-50 p-3 text-sm font-bold text-emerald-700">
+                    {contactStatus}
+                  </p>
+                )}
+              </form>
             </div>
           </div>
         </section>
