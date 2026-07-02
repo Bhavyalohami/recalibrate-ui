@@ -22,19 +22,19 @@
   }
 
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white/80 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-brand-600 shadow-sm backdrop-blur;
+    @apply inline-flex items-center gap-2 rounded-md border border-blue-100 bg-white/90 px-3 py-1 text-xs font-bold uppercase text-blue-700 shadow-sm backdrop-blur;
   }
 
   .btn-base {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-bold transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-bold transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600;
   }
 
   .btn-primary {
-    @apply btn-base bg-brand-600 text-white shadow-glow hover:-translate-y-0.5 hover:bg-brand-700;
+    @apply btn-base bg-blue-700 text-white shadow-glow hover:-translate-y-0.5 hover:bg-blue-800;
   }
 
   .btn-secondary {
-    @apply btn-base border border-slate-200 bg-white/80 text-slate-900 shadow-sm backdrop-blur hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand-700;
+    @apply btn-base border border-slate-200 bg-white/90 text-slate-900 shadow-sm backdrop-blur hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700;
   }
 
   .glass-card {
